@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analog Clock</title>
+    <style>
+        body {
+            background: rgb(48, 48, 48);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Georgia', serif;
+        }
+
+        .outerframe {
+            background: linear-gradient(145deg, #6B6B6B, #808080);
+            border-radius: 50%;
+            padding: 25px;
+            border: 8px solid #4A4A4A;
+            position: relative;
+        }
+
+        .outerframe::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 4px solid #B8B8B8;
+            border-radius: 50%;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .mainface {
+            width: 300px;
+            height: 300px;
+            border: 6px solid #5A5A5A;
+            border-radius: 50%;
+            background: white;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(90, 90, 90, 0.2);
+            z-index: 2;
+        }
+
+        .numbers {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333333;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Times New Roman', serif;
+            transform: translate(-50%, -50%);
+        }
+
+        .pointer {
+            position: absolute;
+            transform-origin: bottom center;
+            border-radius: 2px;
+        }
+
+        .hrspointer {
+            width: 8px;
+            height: 80px;
+            background: rgb(66, 66, 66);
+            left: 146px;
+            top: 70px;
+            border-radius: 4px;
+        }
+
+        .minspointer {
+            width: 5px;
+            height: 110px;
+            background: rgb(66, 66, 66);
+            left: 147.5px;
+            top: 40px;
+            border-radius: 3px;
+        }
+
+        .secpointer {
+            width: 2px;
+            height: 120px;
+            background: rgb(66, 66, 66);
+            left: 149px;
+            top: 30px;
+        }
+
+        .middlecircle {
+            width: 16px;
+            height: 16px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            position: absolute;
+            top: 142px;
+            left: 142px;;
+            border: 3px solid #272727;
+        }
+
+        .clocklabel {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #555555;
+            font-style: italic;
+            font-family: 'Times New Roman', serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="outerframe">
+        <div class="mainface" id="clockFace">
+            <!-- Clock hands -->
+            <div class="pointer hrspointer" id="hrs"></div>
+            <div class="pointer minspointer" id="mins"></div>
+            <div class="pointer secpointer" id="secs"></div>
+            <div class="middlecircle"></div>
+            
+            <div class="clocklabel">Cortez</div>
+        </div>
+    </div>
+
+    <script>
+        function showTime() {
+            const today = new Date();
+            const h = today.getHours() % 12;
+            const m = today.getMinutes();
+            const s = today.getSeconds();
+
+            // Calculate rotation angles
+            const hourRotation = (h * 30) + (m * 0.5);
+            const minuteRotation = (m * 6) + (s * 0.1);
+            const secondRotation = s * 6;
+
+            // Apply rotations to hands
+            document.getElementById('hrs').style.transform = 'rotate(' + hourRotation + 'deg)';
+            document.getElementById('mins').style.transform = 'rotate(' + minuteRotation + 'deg)';
+            document.getElementById('secs').style.transform = 'rotate(' + secondRotation + 'deg)';
+        }
+
+        // Create and position numbers perfectly
+        function addNumbers() {
+            const face = document.getElementById('clockFace');
+            const radius = 125; // Distance from center
+            const centerX = 150; // Center of 300px clock
+            const centerY = 150;
+
+            for (let num = 1; num <= 12; num++) {
+                const angle = (num * 30 - 90) * (Math.PI / 180); // Convert to radians
+                const x = centerX + radius * Math.cos(angle);
+                const y = centerY + radius * Math.sin(angle);
+
+                const numberDiv = document.createElement('div');
+                numberDiv.className = 'numbers';
+                numberDiv.textContent = num;
+                numberDiv.style.left = x + 'px';
+                numberDiv.style.top = y + 'px';
+                
+                face.appendChild(numberDiv);
+            }
+        }
+
+        // Initialize everything
+        addNumbers();
+        setInterval(showTime, 1000);
+        showTime(); // Initial call
+    </script>
+</body>
+</html>
